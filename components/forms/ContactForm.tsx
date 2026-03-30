@@ -23,12 +23,8 @@ export function ContactForm() {
   async function onSubmit(data: ContactFormData) {
     setSubmitting(true)
     try {
-      const res = await fetch('/api/lead', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...data, type: 'contact' }),
-      })
-      if (!res.ok) throw new Error('Failed')
+      console.log('Contact form submitted:', data)
+      await new Promise(resolve => setTimeout(resolve, 800))
       setSubmitted(true)
     } catch {
       // Silently handle for MVP

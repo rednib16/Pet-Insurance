@@ -49,13 +49,10 @@ export function LeadCaptureForm({ preselectedProvider, className, onSuccess }: L
     setError('')
 
     try {
-      const res = await fetch('/api/lead', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      })
-
-      if (!res.ok) throw new Error('Failed to submit')
+      // In production, this would submit to a backend API or service like Formspree/Netlify Forms
+      // For the static demo, we simulate a successful submission
+      console.log('Lead submitted:', data)
+      await new Promise(resolve => setTimeout(resolve, 800))
 
       trackGenerateLead(data.interestedProvider)
       setSubmitted(true)
