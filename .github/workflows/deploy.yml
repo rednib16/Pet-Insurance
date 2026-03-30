@@ -2,7 +2,8 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: ['claude/pet-insurance-mvp-IFdof', 'main']
+    branches: ['main']
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -24,13 +25,14 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install
 
       - name: Build
         run: npx next build
+        env:
+          NEXT_PUBLIC_SITE_URL: https://rednib16.github.io/Pet-Insurance
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
