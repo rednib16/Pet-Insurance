@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 48" fill="none">
+  <g>
+    <!-- Paw print replacing the 'a' dot -->
+    <circle cx="18" cy="14" r="4" fill="#2A9D8F"/>
+    <circle cx="10" cy="8" r="3" fill="#2A9D8F"/>
+    <circle cx="18" cy="4" r="3" fill="#2A9D8F"/>
+    <circle cx="26" cy="8" r="3" fill="#2A9D8F"/>
+    <!-- Main pad -->
+    <path d="M12 18c0 0-1 6 6 6s6-6 6-6-2-4-6-4-6 4-6 4z" fill="#2A9D8F"/>
+  </g>
+  <text x="40" y="36" font-family="Nunito, sans-serif" font-weight="800" font-size="32" fill="#2A2A24">
+    <tspan fill="#2A9D8F">Paw</tspan><tspan fill="#2A2A24">Compare</tspan>
+  </text>
+</svg>
