@@ -235,103 +235,97 @@ export function CompareClient() {
                   <div
                     key={plan.id}
                     className={cn(
-                      'card flex flex-col md:flex-row md:items-center gap-4 md:gap-6',
+                      'card',
                       selectedPlans.includes(plan.id) && 'ring-2 ring-primary-500'
                     )}
                   >
-                    {/* Checkbox */}
-                    <div className="flex items-center">
-                      <input
-                        type="checkbox"
-                        checked={selectedPlans.includes(plan.id)}
-                        onChange={() => togglePlanSelection(plan.id)}
-                        className="w-5 h-5 rounded border-neutral-300 text-primary-500 focus:ring-primary-500"
-                        aria-label={`Select ${provider.name} ${plan.name} for comparison`}
-                        disabled={!selectedPlans.includes(plan.id) && selectedPlans.length >= 3}
-                      />
-                    </div>
-
-                    {/* Provider Info */}
-                    <div className="flex items-center gap-3 md:w-48">
-                      <div className="w-10 h-10 bg-primary-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                        <span className="font-heading font-bold text-primary-500 text-xs">
-                          {provider.name.charAt(0)}
-                        </span>
+                    {/* Top row: checkbox, provider info, actions */}
+                    <div className="flex items-center justify-between gap-4 mb-4">
+                      <div className="flex items-center gap-3">
+                        <input
+                          type="checkbox"
+                          checked={selectedPlans.includes(plan.id)}
+                          onChange={() => togglePlanSelection(plan.id)}
+                          className="w-5 h-5 rounded border-neutral-300 text-primary-500 focus:ring-primary-500 flex-shrink-0"
+                          aria-label={`Select ${provider.name} ${plan.name} for comparison`}
+                          disabled={!selectedPlans.includes(plan.id) && selectedPlans.length >= 3}
+                        />
+                        <div className="w-10 h-10 bg-primary-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                          <span className="font-heading font-bold text-primary-500 text-xs">
+                            {provider.name.charAt(0)}
+                          </span>
+                        </div>
+                        <div>
+                          <Link
+                            href={`/providers/${provider.slug}`}
+                            className="font-heading font-bold text-sm hover:text-primary-500 transition-colors"
+                          >
+                            {provider.name}
+                          </Link>
+                          <p className="text-xs text-neutral-500">{plan.name}</p>
+                        </div>
+                        <Badge variant="primary" className="hidden sm:inline-flex ml-2">{getCoverageTypeLabel(plan.coverageType)}</Badge>
                       </div>
-                      <div>
-                        <Link
-                          href={`/providers/${provider.slug}`}
-                          className="font-heading font-bold text-sm hover:text-primary-500 transition-colors"
+
+                      <div className="flex gap-2 flex-shrink-0">
+                        <a
+                          href={provider.affiliateLink}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={() => trackAffiliateClick(provider.name, plan.name)}
+                          className="btn-primary text-xs flex items-center gap-1"
                         >
-                          {provider.name}
-                        </Link>
-                        <p className="text-xs text-neutral-500">{plan.name}</p>
+                          Get Quote <ExternalLink className="w-3 h-3" />
+                        </a>
+                        <button
+                          onClick={() => handleCallbackRequest(provider.name)}
+                          className="btn-outline text-xs hidden sm:inline-flex"
+                        >
+                          Callback
+                        </button>
                       </div>
                     </div>
 
-                    {/* Plan Details */}
-                    <div className="flex-1 grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
+                    {/* Bottom row: plan details grid */}
+                    <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-4 text-sm pt-4 border-t border-neutral-100">
                       <div>
-                        <span className="text-neutral-500 text-xs block">Type</span>
-                        <Badge variant="primary">{getCoverageTypeLabel(plan.coverageType)}</Badge>
+                        <span className="text-neutral-500 text-xs block mb-1">Premium</span>
+                        <span className="font-semibold text-sm">{formatCurrency(plan.monthlyPremiumFrom)}-{formatCurrency(plan.monthlyPremiumTo)}/mo</span>
                       </div>
                       <div>
-                        <span className="text-neutral-500 text-xs block">Premium</span>
-                        <span className="font-semibold">{formatCurrency(plan.monthlyPremiumFrom)}-{formatCurrency(plan.monthlyPremiumTo)}/mo</span>
+                        <span className="text-neutral-500 text-xs block mb-1">Annual Limit</span>
+                        <span className="font-semibold text-sm">{formatCurrency(plan.annualLimit)}</span>
                       </div>
                       <div>
-                        <span className="text-neutral-500 text-xs block">Annual Limit</span>
-                        <span className="font-semibold">{formatCurrency(plan.annualLimit)}</span>
-                      </div>
-                      <div>
-                        <span className="text-neutral-500 text-xs block">Excess</span>
-                        <span className="font-semibold">
-                          {plan.excessPercentage > 0 ? `${plan.excessPercentage}%` : ''}{' '}
-                          {plan.excessMinimum > 0 ? `(min ${formatCurrency(plan.excessMinimum)})` : ''}
+                        <span className="text-neutral-500 text-xs block mb-1">Excess</span>
+                        <span className="font-semibold text-sm">
+                          {plan.excessPercentage > 0 ? `${plan.excessPercentage}%` : 'Fixed'}
+                          {plan.excessMinimum > 0 ? ` (min ${formatCurrency(plan.excessMinimum)})` : ''}
                         </span>
                       </div>
-                    </div>
-
-                    {/* Feature icons */}
-                    <div className="flex gap-2 flex-wrap">
+                      <div>
+                        <span className="text-neutral-500 text-xs block mb-1">Waiting</span>
+                        <span className="font-semibold text-sm">{plan.waitingPeriodDays} days</span>
+                      </div>
                       {[
                         { label: 'Pre-existing', value: plan.coversPreExisting },
                         { label: 'Hereditary', value: plan.coversHereditary },
                         { label: 'Dental', value: plan.coversDental },
                         { label: 'Chronic', value: plan.coversChronic },
                       ].map(feature => (
-                        <div
-                          key={feature.label}
-                          className="flex items-center gap-1 text-xs"
-                          title={feature.label}
-                        >
+                        <div key={feature.label}>
+                          <span className="text-neutral-500 text-xs block mb-1">{feature.label}</span>
                           {feature.value ? (
-                            <Check className="w-4 h-4 text-green-500" />
+                            <span className="flex items-center gap-1 text-green-600 font-semibold text-sm">
+                              <Check className="w-4 h-4" /> Yes
+                            </span>
                           ) : (
-                            <X className="w-4 h-4 text-neutral-300" />
+                            <span className="flex items-center gap-1 text-neutral-400 text-sm">
+                              <X className="w-4 h-4" /> No
+                            </span>
                           )}
-                          <span className="hidden xl:inline text-neutral-500">{feature.label}</span>
                         </div>
                       ))}
-                    </div>
-
-                    {/* Actions */}
-                    <div className="flex gap-2 md:flex-col md:w-36">
-                      <a
-                        href={provider.affiliateLink}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        onClick={() => trackAffiliateClick(provider.name, plan.name)}
-                        className="btn-primary text-xs flex-1 text-center flex items-center justify-center gap-1"
-                      >
-                        Get Quote <ExternalLink className="w-3 h-3" />
-                      </a>
-                      <button
-                        onClick={() => handleCallbackRequest(provider.name)}
-                        className="btn-outline text-xs flex-1"
-                      >
-                        Callback
-                      </button>
                     </div>
                   </div>
                 )
